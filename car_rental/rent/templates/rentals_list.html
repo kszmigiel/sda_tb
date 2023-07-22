@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<a href={% url 'rental_create' %}>
+        <button type="button">Create Rental</button>
+    </a>
+
+{% for c in object_list %}
+<p><a href={% url 'rental_detail' c.id %}>{{ c }}</a></p>
+{% endfor %}
+{% endblock %}

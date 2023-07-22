@@ -52,12 +52,16 @@ class Rental(BaseModel):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='rentals', null=False)
     start_date = models.DateField(null=False)
     end_date = models.DateField(null=False)
-    price = models.DecimalField(max_digits=6, decimal_places=2, null=False)
+    price = models.DecimalField(max_digits=6, decimal_places=2, blank=True)
 
     def __str__(self):
         """Return name of rental."""
         return str(self.car) + " " + str(self.client) + " " + str(self.start_date) + " " + str(self.end_date)
 
     def save(self, *args, **kwargs):
-        self.price = self.car.price * (self.end_date - self.start_date).days
+        """Save method."""
+
+        if not self.pk:
+            self.price = self.car.price * (self.end_date - self.start_date).days
+            
         super(Rental, self).save(*args, **kwargs)
