@@ -8,6 +8,21 @@
     </a>
 </div>
 
+<div class="navbar2">
+    {% if user.is_authenticated %}
+        <a class="nav-item" href="{% url 'logout' %}">
+            <button>Logout</button>
+        </a>
+    {% else %}
+        <a class="nav-item" href="{% url 'login' %}">
+            <button>Login</button>
+        </a>
+        <a class="nav-item" href="{% url 'signup' %}">
+            <button>Sign up</button>
+        </a>
+    {% endif %}
+</div>
+
 <div class="container">
     {% block content %}{% endblock %}
 </div>

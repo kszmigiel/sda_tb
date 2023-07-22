@@ -1,4 +1,4 @@
-from django.forms import Form, CharField, Textarea, DateField, DecimalField, ValidationError, ModelChoiceField
+from django.forms import Form, DateField, ValidationError, ModelChoiceField
 from .models import Rental, Car, Client
 
 
@@ -7,7 +7,6 @@ class RentalForm(Form):
     client = ModelChoiceField(queryset=Client.objects)
     start_date = DateField()
     end_date = DateField()
-    #price = DecimalField(max_digits=6, decimal_places=2)
 
     def clean(self):
         data = self.cleaned_data

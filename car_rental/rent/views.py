@@ -1,13 +1,8 @@
 from .models import Car, Client, Rental
-from django.views.generic import FormView, ListView, UpdateView, DetailView, DeleteView, CreateView
+from django.views.generic import FormView, ListView, UpdateView, DetailView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import RentalForm
-
-# CRUD
-# Create
-# Read/Retrieve
-# Update
-# Delete
 
 
 class RentalListView(ListView):
@@ -26,7 +21,7 @@ class RentalDetailView(DetailView):
         return context
 
 
-class RentalCreateView(FormView):
+class RentalCreateView(LoginRequiredMixin, FormView):
     template_name = 'form.html'
     form_class = RentalForm
     success_url = '/rent/rentals/'
@@ -36,14 +31,14 @@ class RentalCreateView(FormView):
         return super().form_valid(form)
 
 
-class RentalUpdateView(UpdateView):
+class RentalUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'form.html'
     model = Rental
     fields = '__all__'
     success_url = '/rent/rentals/'
 
 
-class RentalDeleteView(DeleteView):
+class RentalDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'confirm_delete.html'
     model = Rental
     success_url = '/rent/rentals/'

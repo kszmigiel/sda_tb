@@ -63,5 +63,5 @@ class Rental(BaseModel):
 
         if not self.pk:
             self.price = self.car.price * (self.end_date - self.start_date).days
-            
+
         super(Rental, self).save(*args, **kwargs)
