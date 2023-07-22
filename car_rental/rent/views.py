@@ -1,8 +1,14 @@
 from .models import Car, Client, Rental
 from django.views.generic import FormView, ListView, UpdateView, DetailView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+
 
 from .forms import RentalForm
+
+
+class StaffRequiredMixin(UserPassesTestMixin):
+  def test_func(self):
+    return self.request.user.is_staff
 
 
 class RentalListView(ListView):
@@ -21,24 +27,30 @@ class RentalDetailView(DetailView):
         return context
 
 
-class RentalCreateView(LoginRequiredMixin, FormView):
+class RentalCreateView(PermissionRequiredMixin, FormView):
     template_name = 'form.html'
     form_class = RentalForm
     success_url = '/rent/rentals/'
+    permission_required = 'rent.add_rental'
 
     def form_valid(self, form):
         form.save()
         return super().form_valid(form)
 
 
-class RentalUpdateView(LoginRequiredMixin, UpdateView):
+class RentalUpdateView(PermissionRequiredMixin, UpdateView):
     template_name = 'form.html'
     model = Rental
     fields = '__all__'
     success_url = '/rent/rentals/'
+    permission_required = 'rent.change_rental'
 
 
-class RentalDeleteView(LoginRequiredMixin, DeleteView):
+class RentalDeleteView(PermissionRequiredMixin, StaffRequiredMixin, DeleteView):
     template_name = 'confirm_delete.html'
     model = Rental
     success_url = '/rent/rentals/'
+    permission_required = 'rent.delete_rental'
+
+    def test_func(self):
+        return super().test_func() and self.request.user.is_superuser
